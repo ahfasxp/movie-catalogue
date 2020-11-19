@@ -61,7 +61,6 @@ class MovieFragment : Fragment() {
 
             with(rv_movie) {
                 layoutManager = GridLayoutManager(activity, 2)
-                setHasFixedSize(true)
                 adapter = movieAdapter
             }
             movieAdapter.setOnItemClickCallback(object : MainAdapter.OnItemClickCallback {

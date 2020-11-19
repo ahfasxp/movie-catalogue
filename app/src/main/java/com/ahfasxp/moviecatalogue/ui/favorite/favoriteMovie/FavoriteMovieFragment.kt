@@ -45,7 +45,6 @@ class FavoriteMovieFragment : Fragment() {
 
             with(rv_favorite_movie) {
                 layoutManager = GridLayoutManager(activity, 2)
-                setHasFixedSize(true)
                 adapter = favoriteMovieAdapter
             }
             favoriteMovieAdapter.setOnItemClickCallback(object : MainAdapter.OnItemClickCallback {

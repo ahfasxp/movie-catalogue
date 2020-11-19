@@ -48,7 +48,6 @@ class FavoriteShowFragment : Fragment() {
 
             with(rv_favorite_show) {
                 layoutManager = GridLayoutManager(activity, 2)
-                setHasFixedSize(true)
                 adapter = favoriteShowAdapter
             }
             favoriteShowAdapter.setOnItemClickCallback(object : MainAdapter.OnItemClickCallback {

@@ -62,7 +62,6 @@ class ShowFragment : Fragment() {
 
             with(rv_show) {
                 layoutManager = GridLayoutManager(activity, 2)
-                setHasFixedSize(true)
                 adapter = showAdapter
             }
             showAdapter.setOnItemClickCallback(object : MainAdapter.OnItemClickCallback {
