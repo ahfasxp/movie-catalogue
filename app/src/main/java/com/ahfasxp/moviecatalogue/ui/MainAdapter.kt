@@ -3,6 +3,8 @@ package com.ahfasxp.moviecatalogue.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ahfasxp.moviecatalogue.R
 import com.ahfasxp.moviecatalogue.data.source.local.entity.MainEntity
@@ -10,20 +12,24 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.list_items.view.*
 
-class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
+class MainAdapter internal constructor() :
+    PagedListAdapter<MainEntity, MainAdapter.MainViewHolder>(DIFF_CALLBACK) {
     private var onItemClickCallback: OnItemClickCallback? = null
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
     }
 
-    private var mData = ArrayList<MainEntity>()
+    companion object {
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<MainEntity>() {
+            override fun areItemsTheSame(oldItem: MainEntity, newItem: MainEntity): Boolean {
+                return oldItem.id == newItem.id
+            }
 
-    fun setData(items: List<MainEntity>?) {
-        if (items == null) return
-        this.mData.clear()
-        this.mData.addAll(items)
-        notifyDataSetChanged()
+            override fun areContentsTheSame(oldItem: MainEntity, newItem: MainEntity): Boolean {
+                return oldItem == newItem
+            }
+        }
     }
 
     override fun onCreateViewHolder(
@@ -35,10 +41,11 @@ class MainAdapter : RecyclerView.Adapter<MainAdapter.MainViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.bind(mData[position])
+        val main = getItem(position)
+        if (main != null) {
+            holder.bind(main)
+        }
     }
-
-    override fun getItemCount(): Int = mData.size
 
     inner class MainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(main: MainEntity) {

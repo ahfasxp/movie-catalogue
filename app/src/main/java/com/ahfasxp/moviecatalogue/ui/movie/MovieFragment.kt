@@ -48,7 +48,7 @@ class MovieFragment : Fragment() {
                         Status.LOADING -> progressBar.visibility = View.VISIBLE
                         Status.SUCCESS -> {
                             progressBar.visibility = View.GONE
-                            movieAdapter.setData(movies.data)
+                            movieAdapter.submitList(movies.data)
                             movieAdapter.notifyDataSetChanged()
                         }
                         Status.ERROR -> {

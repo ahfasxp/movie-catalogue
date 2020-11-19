@@ -39,7 +39,7 @@ class FavoriteMovieFragment : Fragment() {
             progressBar.visibility = View.VISIBLE
             favoriteMovieViewModel.getFavoriteMovie().observe(this, Observer { movies ->
                 progressBar.visibility = View.GONE
-                favoriteMovieAdapter.setData(movies)
+                favoriteMovieAdapter.submitList(movies)
                 favoriteMovieAdapter.notifyDataSetChanged()
             })
 

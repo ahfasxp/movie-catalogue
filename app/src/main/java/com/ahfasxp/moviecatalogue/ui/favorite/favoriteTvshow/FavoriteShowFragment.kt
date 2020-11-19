@@ -42,7 +42,7 @@ class FavoriteShowFragment : Fragment() {
             progressBar.visibility = View.VISIBLE
             favoriteShowViewModel.getFavoriteShow().observe(this, Observer { shows ->
                 progressBar.visibility = View.GONE
-                favoriteShowAdapter.setData(shows)
+                favoriteShowAdapter.submitList(shows)
                 favoriteShowAdapter.notifyDataSetChanged()
             })
 

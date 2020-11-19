@@ -49,7 +49,7 @@ class ShowFragment : Fragment() {
                         Status.LOADING -> progressBar.visibility = View.VISIBLE
                         Status.SUCCESS -> {
                             progressBar.visibility = View.GONE
-                            showAdapter.setData(shows.data)
+                            showAdapter.submitList(shows.data)
                             showAdapter.notifyDataSetChanged()
                         }
                         Status.ERROR -> {
