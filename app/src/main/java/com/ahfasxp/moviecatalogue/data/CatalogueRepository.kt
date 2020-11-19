@@ -2,6 +2,8 @@ package com.ahfasxp.moviecatalogue.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.ahfasxp.moviecatalogue.data.source.local.LocalDataSource
 import com.ahfasxp.moviecatalogue.data.source.local.entity.MainEntity
 import com.ahfasxp.moviecatalogue.data.source.remote.ApiResponse
@@ -29,12 +31,19 @@ class CatalogueRepository private constructor(
             }
     }
 
-    override fun getAllMovies(): LiveData<Resource<List<MainEntity>>> {
-        return object : NetworkBoundResource<List<MainEntity>, List<MainResponse>>(appExecutors) {
-            public override fun loadFromDB(): LiveData<List<MainEntity>> =
-                localDataSource.getAllMovies()
+    override fun getAllMovies(): LiveData<Resource<PagedList<MainEntity>>> {
+        return object :
+            NetworkBoundResource<PagedList<MainEntity>, List<MainResponse>>(appExecutors) {
+            public override fun loadFromDB(): LiveData<PagedList<MainEntity>> {
+                val config = PagedList.Config.Builder()
+                    .setEnablePlaceholders(false)
+                    .setInitialLoadSizeHint(10)
+                    .setPageSize(10)
+                    .build()
+                return LivePagedListBuilder(localDataSource.getAllMovies(), config).build()
+            }
 
-            override fun shouldFetch(data: List<MainEntity>?): Boolean =
+            override fun shouldFetch(data: PagedList<MainEntity>?): Boolean =
                 data == null || data.isEmpty()
 
             public override fun createCall(): LiveData<ApiResponse<List<MainResponse>>> =
@@ -60,12 +69,19 @@ class CatalogueRepository private constructor(
         }.asLiveData()
     }
 
-    override fun getAllShows(): LiveData<Resource<List<MainEntity>>> {
-        return object : NetworkBoundResource<List<MainEntity>, List<MainResponse>>(appExecutors) {
-            public override fun loadFromDB(): LiveData<List<MainEntity>> =
-                localDataSource.getAllShows()
+    override fun getAllShows(): LiveData<Resource<PagedList<MainEntity>>> {
+        return object :
+            NetworkBoundResource<PagedList<MainEntity>, List<MainResponse>>(appExecutors) {
+            public override fun loadFromDB(): LiveData<PagedList<MainEntity>> {
+                val config = PagedList.Config.Builder()
+                    .setEnablePlaceholders(false)
+                    .setInitialLoadSizeHint(10)
+                    .setPageSize(10)
+                    .build()
+                return LivePagedListBuilder(localDataSource.getAllShows(), config).build()
+            }
 
-            override fun shouldFetch(data: List<MainEntity>?): Boolean =
+            override fun shouldFetch(data: PagedList<MainEntity>?): Boolean =
                 data == null || data.isEmpty()
 
             public override fun createCall(): LiveData<ApiResponse<List<MainResponse>>> =
@@ -155,11 +171,23 @@ class CatalogueRepository private constructor(
         }.asLiveData()
     }
 
-    override fun getFavoriteMovie(): LiveData<List<MainEntity>> =
-        localDataSource.getFavoriteMovie()
+    override fun getFavoriteMovie(): LiveData<PagedList<MainEntity>> {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(10)
+            .setPageSize(10)
+            .build()
+        return LivePagedListBuilder(localDataSource.getFavoriteMovie(), config).build()
+    }
 
-    override fun getFavoriteShow(): LiveData<List<MainEntity>> =
-        localDataSource.getFavoriteShow()
+    override fun getFavoriteShow(): LiveData<PagedList<MainEntity>> {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setInitialLoadSizeHint(10)
+            .setPageSize(10)
+            .build()
+        return LivePagedListBuilder(localDataSource.getFavoriteShow(), config).build()
+    }
 
     override fun setFavorite(main: MainEntity, state: Boolean) {
         appExecutors.diskIO().execute { localDataSource.setFavorite(main, state) }
