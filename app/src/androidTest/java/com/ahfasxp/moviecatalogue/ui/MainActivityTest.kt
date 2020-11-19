@@ -74,8 +74,8 @@ class MainActivityTest {
 
     @Test
     fun loadShow() {
-        //Klik TabLayout dengan teks tvshow
-        onView(withText("TV SHOW")).perform(ViewActions.click())
+        //Klik BottomNavigation dengan teks tvshow
+        onView(allOf(withText("TV Show"), isDisplayed())).perform(ViewActions.click())
         //Memastikan rv_show dalam keadaan tampil
         onView(allOf(withId(R.id.rv_show), isDisplayed()))
         //Gulir rv_show ke posisi data terakhir
@@ -84,13 +84,13 @@ class MainActivityTest {
                 withId(R.id.rv_show),
                 isDisplayed()
             )
-        ).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(dummyShow.size))
+        ).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(dummyMovie.size))
     }
 
     @Test
     fun loadDetailShow() {
-        //Klik TabLayout dengan teks tvshow
-        onView(allOf(withText("TV SHOW"), isDisplayed())).perform(ViewActions.click())
+        //Klik BottomNavigation dengan teks tvshow
+        onView(allOf(withText("TV Show"), isDisplayed())).perform(ViewActions.click())
         //Memberi tindakan klik pada data pertama di rv_movie
         onView(allOf(withId(R.id.rv_show), isDisplayed())).perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
@@ -107,5 +107,17 @@ class MainActivityTest {
         onView(withId(R.id.tv_tagline)).check(matches(withText(dummyShow[0].tagline)))
         onView(allOf(withId(R.id.tv_overview), isDisplayed()))
         onView(withId(R.id.tv_overview)).check(matches(withText(dummyShow[0].overview)))
+    }
+
+    @Test
+    fun loadFavorite() {
+        //Klik BottomNavigation dengan teks favorite
+        onView(allOf(withText("Favorite"), isDisplayed())).perform(ViewActions.click())
+        //Memastikan rv_favorite_movie dalam keadaan tampil
+        onView(allOf(withId(R.id.rv_favorite_movie), isDisplayed()))
+        //Klik TabLayput dengan text tvshow
+        onView(allOf(withText("TV SHOW"), isDisplayed())).perform(ViewActions.click())
+        //Memastikan rv_favorite_show dalam keadaan tampil
+        onView(allOf(withId(R.id.rv_favorite_show), isDisplayed()))
     }
 }

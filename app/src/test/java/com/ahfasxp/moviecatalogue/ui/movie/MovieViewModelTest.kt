@@ -3,9 +3,11 @@ package com.ahfasxp.moviecatalogue.ui.movie
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import com.ahfasxp.moviecatalogue.data.source.local.entity.MainEntity
 import com.ahfasxp.moviecatalogue.data.CatalogueRepository
 import com.ahfasxp.moviecatalogue.utils.DataDummy
+import com.ahfasxp.moviecatalogue.vo.Resource
 import org.junit.Test
 import org.junit.Assert.*
 import org.junit.Before
@@ -27,7 +29,10 @@ class MovieViewModelTest {
     private lateinit var catalogueRepository: CatalogueRepository
 
     @Mock
-    private lateinit var observer: Observer<List<MainEntity>>
+    private lateinit var observer: Observer<Resource<PagedList<MainEntity>>>
+
+    @Mock
+    private lateinit var pagedList: PagedList<MainEntity>
 
     @Before
     fun setUp() {
@@ -36,21 +41,18 @@ class MovieViewModelTest {
 
     @Test
     fun getMovies() {
-        val dummyMovies = DataDummy.generateDummyMovie()
-        val movies = MutableLiveData<List<MainEntity>>()
-        movies.value = dummyMovies
+        val dummyMovie = Resource.success(pagedList)
+        `when`(dummyMovie.data?.size).thenReturn(10)
+        val movies = MutableLiveData<Resource<PagedList<MainEntity>>>()
+        movies.value = dummyMovie
 
         `when`(catalogueRepository.getAllMovies()).thenReturn(movies)
-        //Memanipulasi data ketika pemanggilan data movie di kelas repository.
-        val movieEntities = movieViewModel.getMovies().value
-        //Memastikan metode di kelas repository terpanggil.
-        verify<CatalogueRepository>(catalogueRepository).getAllMovies()
-        //Melakukan pengecekan data movie apakah null atau tidak.
+        val movieEntities = movieViewModel.getMovies().value?.data
+        verify(catalogueRepository).getAllMovies()
         assertNotNull(movieEntities)
-        //Melakukan pengecekan jumlah data movie apakah sudah sesuai atau belum.
         assertEquals(10, movieEntities?.size)
 
         movieViewModel.getMovies().observeForever(observer)
-        verify(observer).onChanged(dummyMovies)
+        verify(observer).onChanged(dummyMovie)
     }
 }

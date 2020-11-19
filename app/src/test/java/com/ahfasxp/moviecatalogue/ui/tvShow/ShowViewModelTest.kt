@@ -3,9 +3,11 @@ package com.ahfasxp.moviecatalogue.ui.tvShow
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import com.ahfasxp.moviecatalogue.data.source.local.entity.MainEntity
 import com.ahfasxp.moviecatalogue.data.CatalogueRepository
 import com.ahfasxp.moviecatalogue.utils.DataDummy
+import com.ahfasxp.moviecatalogue.vo.Resource
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -28,7 +30,10 @@ class ShowViewModelTest {
     private lateinit var catalogueRepository: CatalogueRepository
 
     @Mock
-    private lateinit var observer: Observer<List<MainEntity>>
+    private lateinit var observer: Observer<Resource<PagedList<MainEntity>>>
+
+    @Mock
+    private lateinit var pagedList: PagedList<MainEntity>
 
     @Before
     fun setUp() {
@@ -37,21 +42,18 @@ class ShowViewModelTest {
 
     @Test
     fun getTvshow() {
-        val dummyShows = DataDummy.generateDummyTvshow()
-        val shows = MutableLiveData<List<MainEntity>>()
-        shows.value = dummyShows
+        val dummyShow = Resource.success(pagedList)
+        `when`(dummyShow.data?.size).thenReturn(10)
+        val shows = MutableLiveData<Resource<PagedList<MainEntity>>>()
+        shows.value = dummyShow
 
         `when`(catalogueRepository.getAllShows()).thenReturn(shows)
-        //Memanipulasi data ketika pemanggilan data show di kelas repository.
-        val showEntities = showViewModel.getTvshow().value
-        //Memastikan metode di kelas repository terpanggil.
-        verify<CatalogueRepository>(catalogueRepository).getAllShows()
-        //Melakukan pengecekan data show apakah null atau tidak.
+        val showEntities = showViewModel.getTvshow().value?.data
+        verify(catalogueRepository).getAllShows()
         assertNotNull(showEntities)
-        //Melakukan pengecekan jumlah data show apakah sudah sesuai atau belum.
         assertEquals(10, showEntities?.size)
 
         showViewModel.getTvshow().observeForever(observer)
-        verify(observer).onChanged(dummyShows)
+        verify(observer).onChanged(dummyShow)
     }
 }
