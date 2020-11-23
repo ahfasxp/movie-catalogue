@@ -65,8 +65,10 @@ class CatalogueRepositoryTest {
 
     @Test
     fun getDetailMovie() {
-        val dummyEntity = MutableLiveData<MainEntity>()
-        `when`<LiveData<MainEntity>>(local.getDetailMovie(id)).thenReturn(dummyEntity)
+        val dummyMovie = DataDummy.generateDummyMovie()[0]
+        val movie = MutableLiveData<MainEntity>()
+        movie.value = dummyMovie
+        `when`<LiveData<MainEntity>>(local.getDetailMovie(id)).thenReturn(movie)
 
         val mainEntities =
             LiveDataTestUtil.getValue(catalogueRepository.getDetailMovie(id))
@@ -78,17 +80,20 @@ class CatalogueRepositoryTest {
 
     @Test
     fun getDetailShow() {
-        val dummyEntity = MutableLiveData<MainEntity>()
-        `when`<LiveData<MainEntity>>(local.getDetailShow(id)).thenReturn(dummyEntity)
+        val dummyShow = DataDummy.generateDummyTvshow()[0]
+        val show = MutableLiveData<MainEntity>()
+        show.value = dummyShow
+        `when`<LiveData<MainEntity>>(local.getDetailShow(id)).thenReturn(show)
 
         val mainEntities =
             LiveDataTestUtil.getValue(catalogueRepository.getDetailShow(id))
         verify(local).getDetailShow(id)
         assertNotNull(mainEntities.data)
         assertNotNull(mainEntities.data?.title)
-        assertEquals(movieResponses[0].title, mainEntities.data?.title)
+        assertEquals(showResponses[0].title, mainEntities.data?.title)
     }
 
+    @Test
     fun getFavoriteMovie() {
         val dataSourceFactory =
             mock(DataSource.Factory::class.java) as DataSource.Factory<Int, MainEntity>
@@ -102,6 +107,7 @@ class CatalogueRepositoryTest {
         assertEquals(movieResponses.size.toLong(), mainEntities.data?.size?.toLong())
     }
 
+    @Test
     fun getFavoriteShow() {
         val dataSourceFactory =
             mock(DataSource.Factory::class.java) as DataSource.Factory<Int, MainEntity>

@@ -24,8 +24,7 @@ class DetailViewModelTest {
     private lateinit var detailViewModel: DetailViewModel
     private val dummyMovie = DataDummy.generateDummyMovie()[0]
     private val dummyShow = DataDummy.generateDummyTvshow()[0]
-    private val movieId = dummyMovie.id
-    private val showId = dummyShow.id
+    private val id = "1"
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -44,11 +43,32 @@ class DetailViewModelTest {
 
     @Test
     fun getMovie() {
+        val dummyMovie = Resource.success(dummyMovie)
+        val movie = MutableLiveData<Resource<MainEntity>>()
+        movie.value = dummyMovie
 
+        `when`<LiveData<Resource<MainEntity>>>(catalogueRepository.getDetailMovie(id)).thenReturn(
+            movie
+        )
+
+        detailViewModel.getMovie().observeForever(observer)
+
+        verify(observer).onChanged(dummyMovie)
     }
 
     @Test
     fun getShow() {
+        val dummyShow = Resource.success(dummyShow)
+        val show = MutableLiveData<Resource<MainEntity>>()
+        show.value = dummyShow
 
+        `when`<LiveData<Resource<MainEntity>>>(catalogueRepository.getDetailShow(id)).thenReturn(
+            show
+        )
+
+        detailViewModel.getShow().observeForever(observer)
+
+        verify(observer).onChanged(dummyShow)
     }
+
 }
